@@ -23,7 +23,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'focus', icon: Zap, label: 'DEEP_FOCUS' },
     { id: 'base', icon: Box, label: 'THE_BASE' },
     { id: 'signals', icon: Video, label: 'SIGNALS' },
-    { id: 'nodes', icon: Map, label: 'NEARBY_NODES' },
+    { id: 'nearby', icon: Map, label: 'NEARBY_NODES' },
     { id: 'community', icon: Users, label: 'NETWORK' },
     { id: 'roadmaps', icon: BookOpen, label: 'PROTOCOLS' },
     { id: 'buddy', icon: MessageSquare, label: 'ASSISTANT' },
@@ -51,7 +51,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <nav className={`flex-1 mt-6 space-y-4 transition-all duration-300 ${isMinimized ? 'px-2' : 'px-4'}`}>
         {navItems.map((item) => (
           <button
-            key={item.id}
+            key={`sidebar-${item.id}`}
             onClick={() => setView(item.id)}
             className={`w-full group relative flex items-center transition-all duration-300 border h-12 ${
               currentView === item.id 
@@ -78,21 +78,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
            </div>
            <div className="space-y-1 h-20 overflow-hidden font-mono text-[7px] leading-tight">
               <p className="text-[var(--tech-accent)] opacity-60">{">>"} NEURAL_LINK: STABLE [99.8%]</p>
-              <p className="text-zinc-600">{">>"} HANDSHAKE: COMPLETED CC.24</p>
+              <p className="text-[var(--tech-text-dim)] opacity-40">{">>"} HANDSHAKE: COMPLETED CC.24</p>
               <p className="text-[var(--tech-accent)] opacity-80 tech-pulse">{">>"} INCOMING_SIGNAL: DETECTED</p>
-              <p className="text-zinc-700">{">>"} ARCH_SYNC: SUCCESSFUL</p>
-              <p className="text-zinc-800">{">>"} BUFFER_CLEARED...</p>
+              <p className="text-[var(--tech-text-dim)] opacity-60">{">>"} ARCH_SYNC: SUCCESSFUL</p>
+              <p className="text-[var(--tech-text-dim)] opacity-80">{">>"} BUFFER_CLEARED...</p>
            </div>
         </div>
       )}
 
       <div className="mt-auto p-4 border-t border-[var(--tech-border)] bg-[var(--tech-indent-bg)]">
-        <div className={`flex items-center space-x-3 mb-6 p-2 rounded border border-white/5 bg-white/5 transition-all duration-300 ${isMinimized ? 'hidden' : 'lg:flex hidden'}`}>
-          <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center overflow-hidden border-2 border-[var(--tech-accent)] opacity-40 shrink-0">
+        <div className={`flex items-center space-x-3 mb-6 p-2 rounded border border-[var(--tech-border)] bg-[var(--tech-inner)]/40 transition-all duration-300 ${isMinimized ? 'hidden' : 'lg:flex hidden'}`}>
+          <div className="w-10 h-10 rounded-full bg-[var(--tech-bg)] flex items-center justify-center overflow-hidden border-2 border-[var(--tech-accent)] opacity-60 shrink-0">
             {user?.photoURL ? (
               <img src={user.photoURL} alt="User" className="w-full h-full object-cover grayscale brightness-125" referrerPolicy="no-referrer" />
             ) : (
-              <UserCircle size={22} className="text-zinc-500" />
+              <UserCircle size={22} className="text-[var(--tech-text-dim)]" />
             )}
           </div>
           <div className="overflow-hidden">

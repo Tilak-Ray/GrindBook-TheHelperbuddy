@@ -76,7 +76,7 @@ export const NodeDiscovery: React.FC = () => {
               {/* Other Nodes */}
               {!scanning && nodes.map((node) => (
                 <motion.div 
-                  key={node.id}
+                  key={`map-node-${node.id}`}
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="absolute z-20 cursor-pointer group"
@@ -112,7 +112,7 @@ export const NodeDiscovery: React.FC = () => {
                    </div>
                 ) : (
                   nodes.map(node => (
-                    <div key={node.id} className="flex items-center space-x-4 group cursor-pointer p-2 hover:bg-[var(--tech-accent)]/5 transition-all">
+                    <div key={`list-node-${node.id}`} className="flex items-center space-x-4 group cursor-pointer p-2 hover:bg-[var(--tech-accent)]/5 transition-all">
                        <div className="w-10 h-10 bg-black border border-[var(--tech-border)] flex items-center justify-center shrink-0">
                           <User size={18} className="text-zinc-700 group-hover:text-[var(--tech-accent)] transition-colors" />
                        </div>

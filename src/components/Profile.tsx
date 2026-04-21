@@ -59,31 +59,31 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
               <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/brushed-alum.png')` }}></div>
 
               {/* Top Header Section */}
-              <div className="flex justify-between items-start mb-8 relative z-10">
+              <div className="flex flex-col sm:flex-row justify-between items-start mb-8 relative z-10 gap-6 sm:gap-0">
                 <div className="space-y-1">
-                  <p className="text-[10px] font-mono text-[var(--tech-accent)] font-bold tracking-[0.4em] uppercase opacity-60">Neural_ID_Protocol // OPERATOR_REGISTRY</p>
-                  <h2 className="text-3xl md:text-5xl font-black text-white italic tracking-tighter uppercase leading-none">{user.displayName}</h2>
+                  <p className="text-[8px] md:text-[10px] font-mono text-[var(--tech-accent)] font-bold tracking-[0.2em] md:tracking-[0.4em] uppercase opacity-60">Neural_ID_Protocol // OPERATOR_REGISTRY</p>
+                  <h2 className="text-2xl md:text-5xl font-black text-white italic tracking-tighter uppercase leading-none">{user.displayName}</h2>
                   <div className="flex items-center space-x-2 pt-2">
                     <div className="w-12 h-1 bg-[var(--tech-accent)] flex space-x-1 p-0.5">
                       <div className="w-1/3 h-full bg-white/20"></div>
                     </div>
-                    <span className="text-[9px] font-mono font-black text-white/40 tracking-widest uppercase">Direct_Access_Granted</span>
+                    <span className="text-[8px] md:text-[9px] font-mono font-black text-white/40 tracking-widest uppercase">Direct_Access_Granted</span>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-4 w-full sm:w-auto justify-between sm:justify-start">
                   {/* Log Out Option (New) */}
                   <button 
                     onClick={handleLogout}
-                    className="tech-panel p-3 bg-black/40 border-[var(--tech-border)] text-red-500/60 hover:text-red-500 hover:border-red-500/40 transition-all group"
+                    className="tech-panel p-2.5 md:p-3 bg-black/40 border-[var(--tech-border)] text-red-500/60 hover:text-red-500 hover:border-red-500/40 transition-all group"
                     title="Terminate Session"
                   >
                     <LogOut size={16} className="group-hover:scale-110 transition-transform" />
                   </button>
 
                   <div className="relative group">
-                    <div className="tech-badge-pill px-6 md:px-8 py-3 rounded-full relative z-10 flex items-center justify-center transform -rotate-2 group-hover:rotate-0 transition-transform duration-500">
-                      <span className="text-xl md:text-2xl font-black text-[#1a1c1e] italic tracking-tighter shrink-0">LV.{user.stats?.level || 1 < 10 ? `0${user.stats?.level || 1}` : user.stats?.level || 1}</span>
+                    <div className="tech-badge-pill px-5 md:px-8 py-2.5 md:py-3 rounded-full relative z-10 flex items-center justify-center transform -rotate-2 group-hover:rotate-0 transition-transform duration-500">
+                      <span className="text-lg md:text-2xl font-black text-[#1a1c1e] italic tracking-tighter shrink-0">LV.{user.stats?.level || 1 < 10 ? `0${user.stats?.level || 1}` : user.stats?.level || 1}</span>
                     </div>
                     <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-xl scale-150 animate-pulse"></div>
                   </div>
@@ -119,19 +119,19 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                     </button>
                   </div>
                   
-                  <div className="tech-indent p-5 bg-black/40 min-h-[90px] border border-white/5">
+                  <div className="tech-indent p-5 bg-[var(--tech-inner)]/40 min-h-[90px] border border-[var(--tech-border)]">
                     <div className="flex items-center justify-between mb-2">
                        <span className="text-[7px] font-mono text-[var(--tech-accent)] uppercase tracking-widest font-black italic">Operator_Notes</span>
-                       <Fingerprint size={10} className="text-white/20" />
+                       <Fingerprint size={10} className="text-[var(--tech-text)]/20" />
                     </div>
                     {isEditing ? (
                       <textarea 
                         value={bio}
                         onChange={(e) => setBio(e.target.value)}
-                        className="w-full bg-transparent text-[10px] text-white font-bold uppercase tracking-widest outline-none resize-none border-b border-white/10"
+                        className="w-full bg-transparent text-[10px] text-[var(--tech-text-bright)] font-bold uppercase tracking-widest outline-none resize-none border-b border-[var(--tech-border)]"
                       />
                     ) : (
-                      <p className="text-[9px] text-white/80 font-bold uppercase tracking-widest leading-relaxed italic">{bio}</p>
+                      <p className="text-[9px] text-[var(--tech-text)]/80 font-bold uppercase tracking-widest leading-relaxed italic">{bio}</p>
                     )}
                   </div>
                 </div>
@@ -139,17 +139,17 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                 {/* Technical Stats & Connectivity Mod */}
                 <div className="flex-1 space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div className="tech-indent p-5 bg-black/20 group hover:bg-black/30 transition-all border-l-2 border-[var(--tech-accent)]/20">
+                    <div className="tech-indent p-5 bg-[var(--tech-inner)]/20 group hover:bg-[var(--tech-inner)]/30 transition-all border-l-2 border-[var(--tech-accent)]/20">
                        <p className="text-[7px] font-black text-[var(--tech-text-dim)] uppercase tracking-widest mb-1.5">Persistence_Rating</p>
                        <div className="flex items-end justify-between">
-                          <span className="text-2xl font-black text-white italic leading-none">{user.stats?.streak || 0}d</span>
+                          <span className="text-2xl font-black text-[var(--tech-text-bright)] italic leading-none">{user.stats?.streak || 0}d</span>
                           <Flame size={16} className="text-[var(--tech-accent)] tech-pulse" />
                        </div>
                     </div>
-                    <div className="tech-indent p-5 bg-black/20 group hover:bg-black/30 transition-all border-l-2 border-indigo-500/20">
+                    <div className="tech-indent p-5 bg-[var(--tech-inner)]/20 group hover:bg-[var(--tech-inner)]/30 transition-all border-l-2 border-indigo-500/20">
                        <p className="text-[7px] font-black text-[var(--tech-text-dim)] uppercase tracking-widest mb-1.5">Extraction_Success</p>
                        <div className="flex items-end justify-between">
-                          <span className="text-2xl font-black text-white italic leading-none">{user.stats?.tasksCompleted || 0}u</span>
+                          <span className="text-2xl font-black text-[var(--tech-text-bright)] italic leading-none">{user.stats?.tasksCompleted || 0}u</span>
                           <Trophy size={16} className="text-indigo-400" />
                        </div>
                     </div>
@@ -190,12 +190,12 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                   </div>
 
                   {/* QR / Barcode Module (Bottom corner inspired by Image 1) */}
-                  <div className="flex items-center justify-between pt-4">
-                     <div className="flex-1 pr-6">
+                  <div className="flex flex-col sm:flex-row items-center justify-between pt-4 gap-6 sm:gap-0">
+                     <div className="flex-1 pr-0 sm:pr-6 w-full sm:w-auto">
                         <div className="h-6 w-full tech-qr-sim opacity-40 mb-2"></div>
-                        <p className="text-[6px] font-mono text-white/20 uppercase tracking-[0.5em] font-black">Authentication_Sequence_Active // Secure_Node_Access</p>
+                        <p className="text-[6px] font-mono text-white/20 uppercase tracking-[0.3em] md:tracking-[0.5em] font-black">Authentication_Sequence_Active // Secure_Node_Access</p>
                      </div>
-                     <div className="w-16 h-16 bg-white/10 p-1 border border-white/5 relative">
+                     <div className="w-16 h-16 bg-white/10 p-1 border border-white/5 relative shrink-0">
                         <QrCode size={54} className="text-white opacity-20" />
                         <div className="absolute inset-0 flex items-center justify-center">
                            <Shield size={16} className="text-[var(--tech-accent)]" />
@@ -273,31 +273,31 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
 
               {/* Evolution Progress */}
               <div className="space-y-8">
-                <p className="text-[10px] font-black text-indigo-400 tracking-[0.4em] uppercase">Architecture_Stability</p>
+                <p className="text-[10px] font-black text-indigo-500 tracking-[0.4em] uppercase">Architecture_Stability</p>
                 <div className="tech-panel p-10 bg-[var(--tech-inner)] space-y-12">
                    <div className="flex items-center justify-between">
                       <div>
-                         <p className="text-[9px] font-black text-white/40 uppercase tracking-widest mb-1">Current_Tier</p>
-                         <p className="text-3xl font-black text-white italic italic tracking-tighter uppercase leading-none">Vanguard_Unit</p>
+                         <p className="text-[9px] font-black text-[var(--tech-text-dim)] uppercase tracking-widest mb-1">Current_Tier</p>
+                         <p className="text-3xl font-black text-[var(--tech-text-bright)] italic tracking-tighter uppercase leading-none">Vanguard_Unit</p>
                       </div>
-                      <div className="w-16 h-16 rounded-full border-4 border-white/5 flex items-center justify-center relative">
+                      <div className="w-16 h-16 rounded-full border-4 border-[var(--tech-border)] flex items-center justify-center relative">
                          <div className="absolute inset-0 border-t-4 border-[var(--tech-accent)] rounded-full animate-spin"></div>
                          <span className="text-[var(--tech-accent)] font-black italic">{user.stats?.level || 1}</span>
                       </div>
                    </div>
 
                    <div className="space-y-4">
-                      <div className="flex items-center justify-between text-[10px] font-black text-white tracking-widest leading-none">
+                      <div className="flex items-center justify-between text-[10px] font-black text-[var(--tech-text-bright)] tracking-widest leading-none">
                          <span className="uppercase">Evolution_Status</span>
                          <span className="italic text-[var(--tech-accent)]">{Math.round(((user.stats?.exp || 0) / ((user.stats?.level || 1) * 500)) * 100)}% COMPLETE</span>
                       </div>
-                      <div className="h-4 w-full bg-black/40 tech-indent p-1">
+                      <div className="h-4 w-full bg-[var(--tech-inner)]/40 tech-indent p-1">
                          <div 
                           className="h-full bg-[var(--tech-accent)] shadow-[0_0_10px_var(--tech-glow)] transition-all duration-1000" 
                           style={{ width: `${Math.min(100, ((user.stats?.exp || 0) / ((user.stats?.level || 1) * 500)) * 100)}%` }}
                          ></div>
                       </div>
-                      <p className="text-[8px] font-mono text-white/20 uppercase tracking-[0.3em] font-bold text-center">Next Synchronization Point in {((user.stats?.level || 1) * 500) - (user.stats?.exp || 0)} Units</p>
+                      <p className="text-[8px] font-mono text-[var(--tech-text-dim)]/40 uppercase tracking-[0.3em] font-bold text-center">Next Synchronization Point in {((user.stats?.level || 1) * 500) - (user.stats?.exp || 0)} Units</p>
                    </div>
                 </div>
               </div>

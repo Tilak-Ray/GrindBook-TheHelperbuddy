@@ -10,10 +10,13 @@ import { WorldGrid } from './components/WorldGrid';
 import { GrindBot } from './components/GrindBot';
 import { Roadmaps } from './components/Roadmaps';
 import { Profile } from './components/Profile';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { Toaster } from 'sonner';
+import { logger } from './lib/logger';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Zap, Trophy, TrendingUp, Calendar, ArrowRight, UserPlus, LogIn, BookOpen, Globe, Search, Bell, Home, 
-  Users, MessageSquare, UserCircle, Shield, Cpu, Activity, Terminal, Lock, Sun, Moon 
+  Users, MessageSquare, UserCircle, Shield, Cpu, Activity, Terminal, Lock, Sun, Moon, Bot, Menu, X, Video, Map, Box
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
@@ -41,6 +44,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
   const [isSidebarMinimized, setIsSidebarMinimized] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -85,14 +89,29 @@ function App() {
   const handleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
+      logger.info('Initiating authentication handshake');
       await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error("Login failed:", error);
+      toast.success('Authentication Successful', {
+        description: 'Biolink established. Profile synchronized.',
+      });
+    } catch (error: any) {
+      logger.error("Authentication failed", { error });
+      toast.error('Handshake Failed', {
+        description: error.message || 'The authentication relay is unresponsive.',
+      });
     }
   };
 
   const handleLogout = async () => {
-    await signOut(auth);
+    try {
+      logger.info('Terminating active session');
+      await signOut(auth);
+      toast.info('Session Terminated', {
+        description: 'Biolink closed. Neural status: Dormant.',
+      });
+    } catch (error: any) {
+      logger.error("Sign out failed", { error });
+    }
   };
 
   const toggleTheme = () => {
@@ -176,21 +195,21 @@ function App() {
     switch (view) {
       case 'dashboard':
         return (
-          <div className="space-y-8 pb-32">
-            <div className="grid lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2 space-y-8">
-                <div className="tech-panel p-8 bg-[var(--tech-inner)]">
-                  <div className="flex items-center justify-between mb-10">
+          <div className="space-y-6 md:space-y-8 pb-32">
+            <div className="grid lg:grid-cols-3 gap-6 md:gap-8">
+              <div className="lg:col-span-2 space-y-6 md:space-y-8">
+                <div className="tech-panel p-6 md:p-8 bg-[var(--tech-inner)]">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 sm:mb-10 gap-4">
                     <div>
-                      <h2 className="text-3xl font-black text-[var(--tech-text-bright)] tracking-tighter uppercase mb-2">Neural_Status</h2>
-                      <p className="text-[9px] font-mono text-[var(--tech-text-dim)] uppercase tracking-[0.3em]">Execution metrics for current cycle.</p>
+                      <h2 className="text-2xl md:text-3xl font-black text-[var(--tech-text-bright)] tracking-tighter uppercase mb-2">Neural_Status</h2>
+                      <p className="text-[8px] md:text-[9px] font-mono text-[var(--tech-text-dim)] uppercase tracking-[0.3em]">Execution metrics for current cycle.</p>
                     </div>
-                    <div className="w-16 h-16 rounded-full border-4 border-[var(--tech-border)] border-t-[var(--tech-accent)] flex items-center justify-center tech-pulse">
+                    <div className="w-14 h-14 md:w-16 md:h-16 rounded-full border-4 border-[var(--tech-border)] border-t-[var(--tech-accent)] flex items-center justify-center tech-pulse self-start sm:self-center">
                        <span className="text-xs font-black text-[var(--tech-text-bright)]">{user?.stats?.streak || 0}</span>
                     </div>
                   </div>
-                  <div className="h-64 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
+                  <div className="h-48 md:h-64 w-full min-w-[250px]">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                       <BarChart data={chartData}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--tech-border)" />
                         <XAxis dataKey="name" fontSize={9} axisLine={false} tickLine={false} stroke="var(--tech-text-dim)" />
@@ -260,7 +279,7 @@ function App() {
         );
       case 'focus': return <DeepFocus />;
       case 'signals': return <SignalFeed />;
-      case 'nodes': return <NodeDiscovery />;
+      case 'nearby': return <NodeDiscovery />;
       case 'base': return <NeuralOutpost user={user} />;
       case 'community': return <CommunityFeed />;
       case 'roadmaps': return <Roadmaps userId={user?.uid} />;
@@ -271,33 +290,57 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen bg-[var(--tech-bg)] text-[var(--tech-text)] font-sans selection:bg-[var(--tech-accent)]/30 overflow-hidden transition-colors duration-500">
-      <Sidebar 
-        currentView={view} 
-        setView={setView} 
-        user={user} 
-        onLogout={handleLogout}
-        isMinimized={isSidebarMinimized}
-        setIsMinimized={setIsSidebarMinimized}
-      />
+    <ErrorBoundary>
+      <div className="flex h-screen bg-[var(--tech-bg)] text-[var(--tech-text)] font-sans selection:bg-[var(--tech-accent)]/30 overflow-hidden transition-colors duration-500">
+        <Toaster 
+          theme="dark" 
+          position="top-right" 
+          toastOptions={{
+            className: 'tech-panel border-[var(--tech-border)] bg-[var(--tech-inner)] text-[var(--tech-text-bright)] font-mono text-[10px]',
+          }}
+        />
+      <div className="hidden md:block">
+        <Sidebar 
+          currentView={view} 
+          setView={setView} 
+          user={user} 
+          onLogout={handleLogout}
+          isMinimized={isSidebarMinimized}
+          setIsMinimized={setIsSidebarMinimized}
+        />
+      </div>
       
       <main className="flex-1 flex flex-col min-w-0 bg-[var(--tech-bg)]/50 backdrop-blur-3xl relative">
-        <header className="h-20 border-b border-[var(--tech-border)] flex items-center justify-between px-10 bg-[var(--tech-inner)] relative z-20">
-          <div className="flex items-center space-x-6 min-w-0">
-            <h2 className="text-[12px] font-black text-[var(--tech-text-bright)] uppercase tracking-[0.4em] font-mono truncate">{view.replace('_', ' ')}</h2>
-            <div className="hidden md:flex items-center space-x-4 shrink-0">
-               {[...Array(4)].map((_, i) => (
-                  <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-[var(--tech-accent)]' : 'bg-[var(--tech-border)]'}`}></div>
-               ))}
-            </div>
+        {/* Modern Tactical Header (Facebook Style) */}
+        <header className="h-14 md:h-20 border-b border-[var(--tech-border)] flex items-center justify-between px-4 md:px-10 bg-[var(--tech-inner)] sticky top-0 z-50">
+          <div className="flex items-center space-x-3 min-w-0">
+            {view === 'buddy' ? (
+              <Bot size={20} className="text-[var(--tech-accent)] md:hidden" />
+            ) : (
+              <Terminal size={20} className="text-[var(--tech-accent)] md:hidden" />
+            )}
+            <h2 className="text-xl md:text-[12px] font-black text-[var(--tech-text-bright)] md:text-[var(--tech-text-bright)] uppercase tracking-tighter md:tracking-[0.4em] font-mono truncate">
+              {view === 'dashboard' ? 'GRINDBOOK' : view === 'buddy' ? 'NEURAL_CONSULTANT' : view.toUpperCase()}
+            </h2>
           </div>
           
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center space-x-2 md:space-x-8">
+            {/* Minimalist Pill Theme Toggle */}
             <button 
               onClick={toggleTheme}
-              className="p-3 tech-btn border-transparent flex items-center justify-center shadow-none bg-transparent hover:border-[var(--tech-accent)] transition-all"
+              className={`w-11 h-6 md:w-14 md:h-7 rounded-full relative p-1 transition-all duration-500 flex items-center overflow-hidden border ${theme === 'dark' ? 'bg-black border-white/10' : 'bg-zinc-200 border-black/5'}`}
             >
-              {theme === 'dark' ? <Sun size={18} className="text-[var(--tech-accent)]" /> : <Moon size={18} className="text-[var(--tech-accent)]" />}
+              <motion.div 
+                animate={{ x: theme === 'dark' ? (window.innerWidth < 768 ? 20 : 28) : 0 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                className={`w-4 h-4 md:w-5 md:h-5 rounded-full shadow-lg relative z-10 flex items-center justify-center ${theme === 'dark' ? 'bg-white' : 'bg-black'}`}
+              >
+                {theme === 'dark' ? (
+                  <Moon size={10} className="text-black" />
+                ) : (
+                  <Sun size={10} className="text-white" />
+                )}
+              </motion.div>
             </button>
 
             <div className="hidden md:flex items-center bg-[var(--tech-indent-bg)] px-4 py-2 border border-[var(--tech-border)] transition-all focus-within:border-[var(--tech-accent)]/40">
@@ -308,20 +351,131 @@ function App() {
                 className="bg-transparent text-[10px] font-bold uppercase tracking-widest ml-3 outline-none w-48 placeholder:text-zinc-800" 
               />
             </div>
-            <div className="flex items-center space-x-4">
-               <button className="p-3 text-zinc-500 hover:text-[#4ade80] transition-colors relative group">
-                  <div className="absolute top-2 right-2 w-1 h-1 bg-[#4ade80] rounded-full group-hover:scale-150 transition-transform"></div>
+            
+            <button className="md:hidden p-2 text-zinc-500 hover:text-[var(--tech-accent)] transition-colors">
+              <Search size={20} />
+            </button>
+
+            <div className="flex items-center space-x-2 md:space-x-4">
+               <button className="p-2 md:p-3 text-zinc-500 hover:text-[var(--tech-accent)] transition-colors relative group">
+                  <div className="absolute top-2 right-2 w-1 h-1 bg-[var(--tech-accent)] rounded-full group-hover:scale-150 transition-transform"></div>
                   <Bell size={18} />
                </button>
-               <div className="w-[1px] h-6 bg-[#2a2d31]"></div>
-               <div className="md:hidden w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center overflow-hidden border border-[#4ade80]/20">
-                  <img src={user?.photoURL} alt="User" className="w-full h-full object-cover grayscale brightness-125" referrerPolicy="no-referrer" />
-               </div>
+               <div className="w-[1px] h-6 bg-[var(--tech-border)]"></div>
+               {isLoggedIn ? (
+                 <button 
+                   onClick={() => setView('profile')}
+                   className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-zinc-800 flex items-center justify-center overflow-hidden border border-[var(--tech-accent)]/20 hover:border-[var(--tech-accent)] transition-all"
+                 >
+                    <img src={user?.photoURL} alt="User" className="w-full h-full object-cover grayscale brightness-125" referrerPolicy="no-referrer" />
+                 </button>
+               ) : (
+                 <button onClick={handleLogin} className="p-2 text-[var(--tech-accent)]">
+                   <LogIn size={20} />
+                 </button>
+               )}
             </div>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-6 md:p-12 custom-scrollbar relative z-10 scroll-smooth">
+        {/* Top-Tab Navigation (Facebook Style - Mobile Only) */}
+        <nav className="md:hidden flex h-14 bg-[var(--tech-inner)] border-b border-[var(--tech-border)] sticky top-14 z-40">
+          <button 
+            onClick={() => setView('dashboard')} 
+            className={`flex-1 flex items-center justify-center relative transition-colors ${view === 'dashboard' ? 'text-[var(--tech-accent)]' : 'text-zinc-600'}`}
+          >
+            <Home size={22} strokeWidth={view === 'dashboard' ? 2.5 : 2} />
+            {view === 'dashboard' && <motion.div layoutId="mobileTab" className="absolute bottom-0 left-0 right-0 h-1 bg-[var(--tech-accent)] shadow-[0_-4px_10px_var(--tech-glow)]" />}
+          </button>
+          <button 
+            onClick={() => setView('community')} 
+            className={`flex-1 flex items-center justify-center relative transition-colors ${view === 'community' ? 'text-[var(--tech-accent)]' : 'text-zinc-600'}`}
+          >
+            <Users size={22} strokeWidth={view === 'community' ? 2.5 : 2} />
+            {view === 'community' && <motion.div layoutId="mobileTab" className="absolute bottom-0 left-0 right-0 h-1 bg-[var(--tech-accent)] shadow-[0_-4px_10px_var(--tech-glow)]" />}
+          </button>
+          <button 
+            onClick={() => setView('buddy')} 
+            className={`flex-1 flex items-center justify-center relative transition-colors ${view === 'buddy' ? 'text-[var(--tech-accent)]' : 'text-zinc-600'}`}
+          >
+            <Bot size={22} strokeWidth={view === 'buddy' ? 2.5 : 2} />
+            {view === 'buddy' && <motion.div layoutId="mobileTab" className="absolute bottom-0 left-0 right-0 h-1 bg-[var(--tech-accent)] shadow-[0_-4px_10px_var(--tech-glow)]" />}
+          </button>
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)} 
+            className={`flex-1 flex items-center justify-center relative transition-colors ${isMobileMenuOpen ? 'text-[var(--tech-accent)]' : 'text-zinc-600'}`}
+          >
+            <Menu size={22} />
+          </button>
+        </nav>
+
+        {/* Mobile Slide-over Menu Overlay */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <>
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] md:hidden"
+              />
+              <motion.div 
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="fixed right-0 top-0 bottom-0 w-3/4 max-w-[300px] bg-[var(--tech-inner)] border-l border-[var(--tech-border)] z-[70] md:hidden flex flex-col"
+              >
+                <div className="h-14 border-b border-[var(--tech-border)] flex items-center justify-between px-6">
+                   <span className="text-[10px] font-black tracking-[0.4em] uppercase text-[var(--tech-text-dim)] italic">Tactical_Menu</span>
+                   <button onClick={() => setIsMobileMenuOpen(false)} className="text-zinc-500">
+                      <X size={20} />
+                   </button>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto py-8 px-4 space-y-2">
+                    {[
+                      { id: 'focus', icon: Zap, label: 'DEEP_FOCUS' },
+                      { id: 'base', icon: Box, label: 'THE_BASE' },
+                      { id: 'signals', icon: Video, label: 'SIGNALS' },
+                      { id: 'nearby', icon: Map, label: 'NEARBY_NODES' },
+                      { id: 'roadmaps', icon: BookOpen, label: 'PROTOCOLS' },
+                      { id: 'profile', icon: UserCircle, label: 'OPERATOR_SYNC' },
+                    ].map((item) => (
+                     <button
+                       key={`mobmenu-${item.id}`}
+                       onClick={() => {
+                         setView(item.id);
+                         setIsMobileMenuOpen(false);
+                       }}
+                       className={`w-full flex items-center space-x-4 p-4 border transition-all ${
+                         view === item.id 
+                           ? 'bg-[var(--tech-accent)]/10 border-[var(--tech-accent)]/30 text-[var(--tech-text-bright)] active-menu-glow' 
+                           : 'border-transparent text-zinc-500 hover:text-white'
+                       }`}
+                     >
+                       <item.icon size={18} className={view === item.id ? 'text-[var(--tech-accent)]' : ''} />
+                       <span className="text-[10px] font-black tracking-[0.2em] uppercase italic">{item.label}</span>
+                     </button>
+                   ))}
+                </div>
+
+                <div className="p-6 border-t border-[var(--tech-border)] bg-[var(--tech-indent-bg)]">
+                   <button 
+                    onClick={handleLogout}
+                    className="w-full py-4 border border-red-500/20 text-red-500/60 flex items-center justify-center space-x-3 hover:bg-red-500/5 transition-all"
+                   >
+                      <Shield size={14} />
+                      <span className="text-[9px] font-black uppercase tracking-widest italic">TERMINATE_SESSION</span>
+                   </button>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        <div className="flex-1 overflow-y-auto p-4 md:p-12 custom-scrollbar relative z-10 scroll-smooth">
           <AnimatePresence mode="wait">
             <motion.div
               key={view}
@@ -330,28 +484,15 @@ function App() {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.2 }}
             >
-              {renderContent()}
+              <div className="max-w-6xl mx-auto">
+                {renderContent()}
+              </div>
             </motion.div>
           </AnimatePresence>
         </div>
-
-        {/* Mobile Nav */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-[#141618] border-t border-[#2a2d31] flex items-center justify-around px-4 z-50">
-           <button onClick={() => setView('dashboard')} className={`p-4 transition-colors ${view === 'dashboard' ? 'text-[#4ade80] tech-glow-text' : 'text-zinc-600'}`}>
-              <Home size={22} />
-           </button>
-           <button onClick={() => setView('community')} className={`p-4 transition-colors ${view === 'community' ? 'text-[#4ade80] tech-glow-text' : 'text-zinc-600'}`}>
-              <Users size={22} />
-           </button>
-           <button onClick={() => setView('buddy')} className={`p-4 transition-colors ${view === 'buddy' ? 'text-[#4ade80] tech-glow-text' : 'text-zinc-600'}`}>
-              <Zap size={22} />
-           </button>
-           <button onClick={() => setView('profile')} className={`p-4 transition-colors ${view === 'profile' ? 'text-[#4ade80] tech-glow-text' : 'text-zinc-600'}`}>
-              <UserCircle size={22} />
-           </button>
-        </div>
       </main>
     </div>
+    </ErrorBoundary>
   );
 }
 

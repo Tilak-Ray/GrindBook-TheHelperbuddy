@@ -194,56 +194,52 @@ export const DeepFocus: React.FC = () => {
   const glowStrength = (intensity / 100) * 30;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-20 px-6 tech-grid-bg relative overflow-hidden">
+    <div className="flex flex-col items-center py-4 md:py-20 px-2 md:px-6 tech-grid-bg relative overflow-hidden min-h-full">
       {/* Background Ornaments */}
-      <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[var(--tech-accent)] opacity-[0.03] blur-[150px] rounded-full"></div>
-      <div className="absolute bottom-[-5%] left-[-5%] w-[400px] h-[400px] bg-red-500 opacity-[0.02] blur-[100px] rounded-full"></div>
+      <div className="absolute top-[-10%] right-[-5%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-[var(--tech-accent)] opacity-[0.03] blur-[100px] md:blur-[150px] rounded-full"></div>
+      <div className="absolute bottom-[-5%] left-[-5%] w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-red-500 opacity-[0.02] blur-[80px] md:blur-[100px] rounded-full"></div>
 
       {/* Main Hardware Container */}
-      <div className="relative w-full max-w-6xl tech-metal tech-corner-notch p-[1px] shadow-2xl">
-        <div className="bg-[#1a1c1e] tech-corner-notch p-10 md:p-14 relative">
+      <div className="relative w-full max-w-6xl tech-metal tech-corner-notch p-[1px] shadow-2xl mb-12 md:mb-24">
+        <div className="bg-[var(--tech-bg)] tech-corner-notch p-4 md:p-14 relative">
           
           {/* Unit Numbering & Micro-Labels */}
-          <div className="absolute top-10 right-10 flex flex-col items-end opacity-20 select-none">
-            <span className="text-[120px] font-black italic leading-none tech-glow-text">01</span>
-            <div className="flex space-x-2 mt-[-20px]">
-              <div className="w-10 h-1 bg-[var(--tech-accent)]"></div>
-              <div className="w-2 h-1 bg-[var(--tech-accent)]"></div>
-            </div>
+          <div className="absolute top-4 right-4 md:top-10 md:right-10 flex flex-col items-end opacity-[0.03] md:opacity-20 select-none pointer-events-none">
+            <span className="text-[60px] md:text-[120px] font-black italic leading-none tech-glow-text">01</span>
           </div>
 
-          <div className="absolute top-10 left-10 flex flex-col space-y-1 z-10">
+          <div className="absolute top-4 left-4 md:top-10 md:left-10 flex flex-col space-y-0.5 md:space-y-1 z-10">
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 rounded-full bg-[var(--tech-accent)] shadow-[0_0_8px_var(--tech-glow)]"></div>
-              <span className="text-[10px] font-black tracking-[0.5em] text-[var(--tech-accent)] uppercase">UNIT_GB.POMO.05</span>
+              <div className="w-1 h-1 md:w-2 md:h-2 rounded-full bg-[var(--tech-accent)] shadow-[0_0_8px_var(--tech-glow)]"></div>
+              <span className="text-[6px] md:text-[10px] font-black tracking-[0.2em] md:tracking-[0.5em] text-[var(--tech-accent)] uppercase">UNIT_GB.POMO.05</span>
             </div>
-            <p className="font-mono text-[var(--tech-text-dim)] text-[8px] uppercase tracking-widest leading-none">NEURAL_CALIBRATION_ACTIVE</p>
+            <p className="font-mono text-[var(--tech-text-dim)] text-[5px] md:text-[8px] uppercase tracking-widest leading-none">NEURAL_CALIBRATION_ACTIVE</p>
           </div>
 
-          <div className="grid lg:grid-cols-12 gap-12 relative z-10 pt-20">
+          <div className="grid lg:grid-cols-12 gap-6 md:gap-12 relative z-10 pt-8 md:pt-20">
             
             {/* Left Column: Core Engine */}
             <div className="lg:col-span-12 xl:col-span-8 flex flex-col">
-              <div className="tech-glass p-12 md:p-20 tech-corner-notch relative group border-white/5 border-dashed">
+              <div className="tech-glass p-6 md:p-20 tech-corner-notch relative group border-[var(--tech-border)] border-dashed overflow-hidden">
                 {/* Internal HUD Elements */}
-                <div className="absolute top-10 left-10 flex items-center space-x-4 opacity-50">
-                  <div className="w-8 h-[1px] bg-white"></div>
-                  <span className="text-[9px] font-mono tracking-tighter">TELEMETRY_SYNC</span>
+                <div className="absolute top-2 left-2 md:top-10 md:left-10 flex items-center space-x-2 md:space-x-4 opacity-40">
+                  <div className="w-4 md:w-8 h-[1px] bg-[var(--tech-text)]"></div>
+                  <span className="text-[6px] md:text-[9px] font-mono tracking-tighter text-[var(--tech-text)]">TELEMETRY_SYNC</span>
                 </div>
 
                 <div 
-                  className="text-[120px] md:text-[200px] font-mono font-black text-[var(--tech-text-bright)] mb-10 select-none tracking-tighter leading-none italic transition-all duration-700 flex justify-center items-center"
+                  className="text-[52px] sm:text-[120px] md:text-[200px] font-mono font-black text-[var(--tech-text-bright)] mb-4 md:mb-10 select-none tracking-tighter leading-none italic transition-all duration-700 flex justify-center items-center"
                   style={{ 
                     textShadow: isActive ? `0 0 ${glowStrength}px var(--tech-glow)` : 'none',
                   }}
                 >
                   <span className={isActive ? 'animate-pulse' : ''}>{String(minutes).padStart(2, '0')}</span>
-                  <span className="text-[var(--tech-accent)] opacity-20 px-2">:</span>
+                  <span className="text-[var(--tech-accent)] opacity-20 px-0.5 md:px-2 mx-[-2px] md:mx-0">:</span>
                   <span className={isActive ? 'animate-pulse delay-150' : ''}>{String(seconds).padStart(2, '0')}</span>
                 </div>
 
                 {/* Progress Visualizer */}
-                <div className="w-full h-1 bg-black/40 rounded-full mb-12 overflow-hidden relative">
+                <div className="w-full h-1 bg-black/40 rounded-full mb-6 md:mb-12 overflow-hidden relative">
                    <div 
                     className="absolute inset-y-0 left-0 bg-[var(--tech-accent)] transition-all duration-1000 shadow-[0_0_20px_var(--tech-glow)]"
                     style={{ width: `${progress}%` }}
@@ -251,64 +247,63 @@ export const DeepFocus: React.FC = () => {
                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-center gap-6">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-6">
                   <button 
                     onClick={toggleTimer}
-                    className={`h-24 w-60 tech-btn tech-corner-notch flex items-center justify-center space-x-4 transition-all ${isActive ? 'tech-btn-active' : ''}`}
+                    className={`h-14 md:h-24 w-full md:w-60 tech-btn tech-corner-notch flex items-center justify-center space-x-3 md:space-x-4 transition-all ${isActive ? 'tech-btn-active' : ''}`}
                     style={{ 
                       boxShadow: isActive ? `0 0 40px var(--tech-glow)` : 'none',
-                      background: isActive ? 'var(--tech-accent)' : 'linear-gradient(180deg, #2a2d31 0%, #1a1c1e 100%)'
                     }}
                   >
-                    {isActive ? <Pause size={28} className="text-black" /> : <Play size={28} className="text-[var(--tech-accent)]" />}
-                    <span className={`font-black italic uppercase tracking-tighter text-[14px] ${isActive ? 'text-black' : 'text-white'}`}>
+                    {isActive ? <Pause size={20} className="md:w-[28px] md:h-[28px] text-[var(--tech-bg)]" /> : <Play size={20} className="md:w-[28px] md:h-[28px] text-[var(--tech-accent)]" />}
+                    <span className={`font-black italic uppercase tracking-tighter text-[11px] md:text-[14px] ${isActive ? 'text-[var(--tech-bg)]' : 'text-[var(--tech-text-bright)]'}`}>
                       {isActive ? 'SUSPEND_CYCLE' : 'IGNITE_ENGINE'}
                     </span>
                   </button>
                   
                   <button 
                     onClick={resetTimer}
-                    className="h-24 w-24 tech-btn tech-corner-notch flex items-center justify-center border-dashed group transition-all"
+                    className="h-14 md:h-24 w-full md:w-24 tech-btn tech-corner-notch flex items-center justify-center border-dashed group transition-all"
                   >
-                    <RotateCcw size={24} className="group-hover:rotate-[-180deg] transition-transform duration-500" />
+                    <RotateCcw size={18} className="md:w-[24px] md:h-[24px] group-hover:rotate-[-180deg] transition-transform duration-500" />
                   </button>
                 </div>
 
                 {/* Decorative Circular Ports */}
                 <div className="absolute bottom-10 right-10 flex space-x-4 opacity-50">
-                    <div className="w-3 h-3 rounded-full border border-white/20"></div>
-                    <div className="w-3 h-3 rounded-full border border-white/20"></div>
+                    <div className="w-3 h-3 rounded-full border border-[var(--tech-border)]"></div>
+                    <div className="w-3 h-3 rounded-full border border-[var(--tech-border)]"></div>
                     <div className="w-3 h-3 rounded-full border border-[var(--tech-accent)] bg-[var(--tech-accent)] shadow-[0_0_10px_var(--tech-glow)]"></div>
                 </div>
               </div>
 
               {/* Sub-panels (Objective & Calibration) */}
-              <div className="grid md:grid-cols-2 gap-8 mt-12">
-                <div className={`tech-glass p-8 tech-bracket border-l-2 border-l-[var(--tech-accent)] transition-all ${isActive ? 'opacity-30 pointer-events-none' : ''}`}>
-                  <div className="flex items-center space-x-3 mb-6">
+              <div className="grid md:grid-cols-2 gap-4 md:gap-8 mt-6 md:mt-12">
+                <div className={`tech-glass p-6 md:p-8 tech-bracket border-l-2 border-l-[var(--tech-accent)] transition-all ${isActive ? 'opacity-30 pointer-events-none' : ''}`}>
+                  <div className="flex items-center space-x-3 mb-4 md:mb-6">
                     <Target size={14} className="text-[var(--tech-accent)] opacity-50" />
-                    <span className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.4em]">02_Directive</span>
+                    <span className="text-[8px] md:text-[10px] font-black uppercase text-[var(--tech-text-dim)] tracking-[0.4em]">02_Directive</span>
                   </div>
                   <input 
                     type="text"
                     value={sessionGoal}
                     onChange={(e) => setSessionGoal(e.target.value)}
                     placeholder="DEFINE_DATA_POINT..."
-                    className="w-full bg-black/40 border-b border-white/10 p-4 text-[11px] font-black uppercase tracking-[0.2em] outline-none focus:border-[var(--tech-accent)] transition-all"
+                    className="w-full bg-[var(--tech-inner)]/40 border-b border-[var(--tech-border)] p-3 md:p-4 text-[9px] md:text-[11px] font-black uppercase tracking-[0.2em] outline-none focus:border-[var(--tech-accent)] transition-all text-[var(--tech-text)]"
                   />
                 </div>
 
-                <div className={`tech-glass p-8 tech-bracket transition-all ${isActive ? 'opacity-30 pointer-events-none' : ''}`}>
-                  <div className="flex items-center space-x-3 mb-6">
+                <div className={`tech-glass p-6 md:p-8 tech-bracket transition-all ${isActive ? 'opacity-30 pointer-events-none' : ''}`}>
+                  <div className="flex items-center space-x-3 mb-4 md:mb-6">
                     <Settings2 size={14} className="text-[var(--tech-accent)] opacity-50" />
-                    <span className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.4em]">03_Synchronization</span>
+                    <span className="text-[8px] md:text-[10px] font-black uppercase text-[var(--tech-text-dim)] tracking-[0.4em]">03_Synchronization</span>
                   </div>
-                  <div className="space-y-6">
-                    <div className="flex justify-between text-[10px] font-bold text-zinc-400">
+                  <div className="space-y-4 md:space-y-6">
+                    <div className="flex justify-between text-[8px] md:text-[10px] font-bold text-[var(--tech-text-dim)]">
                        <span className="italic">NEURAL_LOAD</span>
                        <span className="text-[var(--tech-accent)] font-mono">{intensity}%</span>
                     </div>
-                    <div className="relative h-2 bg-black/60 rounded-full group cursor-pointer">
+                    <div className="relative h-2 bg-[var(--tech-inner)]/60 rounded-full group cursor-pointer">
                       <input 
                         type="range"
                         min="5" max="100"
@@ -327,65 +322,69 @@ export const DeepFocus: React.FC = () => {
             </div>
 
             {/* Right Column: Protocols & Audio */}
-            <div className="lg:col-span-12 xl:col-span-4 space-y-8 flex flex-col">
+            <div className="lg:col-span-12 xl:col-span-4 space-y-6 md:space-y-8 flex flex-col">
               
               {/* Preset Protocols */}
-              <div className="tech-glass p-8 relative flex-1 min-h-[300px]">
-                <div className="flex items-center space-x-3 mb-10">
-                   <div className="w-1 h-6 bg-red-500"></div>
-                   <h3 className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.4em] italic">04_Stored_Protocols</h3>
+              <div className="tech-glass p-6 md:p-8 relative flex-1 min-h-[auto] md:min-h-[300px]">
+                <div className="flex items-center space-x-3 mb-6 md:mb-10">
+                   <div className="w-1 h-5 md:h-6 bg-red-500"></div>
+                   <h3 className="text-[8px] md:text-[10px] font-black uppercase text-zinc-500 tracking-[0.3em] md:tracking-[0.4em] italic">04_Stored_Protocols</h3>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-3 md:space-y-4">
                   {PRESETS.map((p) => (
                     <button
                       key={p.id}
                       onClick={() => selectPreset(p.id)}
                       disabled={isActive}
-                      className={`w-full p-6 tech-bracket transition-all flex items-center justify-between border ${
+                      className={`w-full p-4 md:p-6 tech-bracket transition-all flex items-center justify-between border ${
                         activePreset === p.id 
                           ? 'bg-[var(--tech-accent)]/10 border-[var(--tech-accent)]/50' 
                           : 'bg-black/20 border-white/5 hover:border-white/10'
                       } ${isActive ? 'opacity-40 cursor-not-allowed' : ''}`}
                     >
-                      <div className="flex items-center space-x-4">
-                         <div className={`w-2 h-2 rounded-full ${activePreset === p.id ? 'bg-[var(--tech-accent)]' : 'bg-zinc-800'}`}></div>
-                         <span className={`text-[10px] font-black tracking-widest italic ${activePreset === p.id ? 'text-white' : 'text-zinc-600'}`}>
+                      <div className="flex items-center space-x-3 md:space-x-4">
+                         <div className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${activePreset === p.id ? 'bg-[var(--tech-accent)]' : 'bg-zinc-800'}`}></div>
+                         <span className={`text-[8px] md:text-[10px] font-black tracking-widest italic ${activePreset === p.id ? 'text-white' : 'text-zinc-600'}`}>
                            {p.label}
                          </span>
                       </div>
-                      <span className="font-mono text-[12px] font-bold text-[var(--tech-accent)]">{p.duration}:00</span>
+                      <span className="font-mono text-[10px] md:text-[12px] font-bold text-[var(--tech-accent)]">{p.duration}:00</span>
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Acoustic Shielding */}
-              <div className="tech-glass p-8 relative">
-                <div className="flex items-center justify-between mb-8">
+              <div className="tech-glass p-6 md:p-8 relative">
+                <div className="flex items-center justify-between mb-6 md:mb-8">
                   <div className="flex items-center space-x-3">
-                    <div className="w-1 h-6 bg-[var(--tech-accent)]"></div>
-                    <h3 className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.4em] italic">05_Shielding_Modules</h3>
+                    <div className="w-1 h-5 md:h-6 bg-[var(--tech-accent)]"></div>
+                    <h3 className="text-[8px] md:text-[10px] font-black uppercase text-zinc-500 tracking-[0.3em] md:tracking-[0.4em] italic">05_Shielding_Modules</h3>
                   </div>
                   <button 
                     onClick={() => setIsMuted(!isMuted)}
                     className={`p-2 transition-colors ${isMuted ? 'text-red-500' : 'text-zinc-500'}`}
                   >
-                    {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                    {isMuted ? (
+                      <VolumeX size={14} className="md:w-4 md:h-4" />
+                    ) : (
+                      <Volume2 size={14} className="md:w-4 md:h-4" />
+                    )}
                   </button>
                 </div>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-2 md:gap-3">
                   {AMBIENT_SOUNDS.map((s) => (
                     <button
                       key={s.id}
                       onClick={() => setActiveSound(s.id)}
-                      className={`flex flex-col items-center justify-center p-4 transition-all relative group ${
+                      className={`flex flex-col items-center justify-center p-3 md:p-4 transition-all relative group ${
                         activeSound === s.id 
-                          ? 'bg-[var(--tech-accent)]' 
-                          : 'bg-black/20 hover:bg-white/5 opacity-50'
+                          ? 'bg-[var(--tech-accent)] text-black' 
+                          : 'bg-black/20 hover:bg-white/5 opacity-50 text-zinc-400'
                       }`}
                     >
-                      <s.icon size={16} className={activeSound === s.id ? 'text-black' : 'text-zinc-400 group-hover:text-white'} />
-                      <span className={`text-[7px] font-black mt-2 tracking-tighter ${activeSound === s.id ? 'text-black' : 'text-zinc-600 group-hover:text-zinc-400'}`}>
+                      <s.icon size={14} className={`md:w-4 md:h-4 ${activeSound === s.id ? 'text-black' : 'group-hover:text-white'}`} />
+                      <span className={`text-[6px] md:text-[7px] font-black mt-2 tracking-tighter uppercase ${activeSound === s.id ? 'text-black' : 'text-zinc-600 group-hover:text-zinc-400'}`}>
                         {s.label.split('_')[1]}
                       </span>
                       {activeSound === s.id && (
@@ -396,12 +395,12 @@ export const DeepFocus: React.FC = () => {
                 </div>
               </div>
 
-              <div className="tech-indent tech-corner-notch p-6 border-transparent bg-black/60 relative">
+              <div className="tech-indent tech-corner-notch p-4 md:p-6 border-transparent bg-black/60 relative">
                  <div className="absolute top-2 right-2 opacity-10">
-                    <Cpu size={32} />
+                    <Cpu size={24} className="md:w-8 md:h-8" />
                  </div>
-                 <span className="text-[9px] font-mono text-[var(--tech-accent)] uppercase tracking-widest italic block mb-2">AUTH_TOKEN: GRIND_ACTIVE</span>
-                 <p className="text-[8px] font-mono text-zinc-600 uppercase leading-relaxed font-bold">
+                 <span className="text-[8px] md:text-[9px] font-mono text-[var(--tech-accent)] uppercase tracking-widest italic block mb-2">AUTH_TOKEN: GRIND_ACTIVE</span>
+                 <p className="text-[7px] md:text-[8px] font-mono text-zinc-600 uppercase leading-relaxed font-bold">
                     Biometric sync confirmed. Neural Engine protocol v2.1.0-STABLE. All shielding modules reporting optimal resonance.
                  </p>
               </div>
@@ -412,12 +411,12 @@ export const DeepFocus: React.FC = () => {
       </div>
 
       {/* Outer Telemetry Decoration */}
-      <div className="mt-12 flex space-x-32 opacity-20 select-none">
-        <div className="flex flex-col items-start font-mono text-[10px]">
+      <div className="mt-4 md:mt-12 flex space-x-12 md:space-x-32 opacity-10 md:opacity-20 select-none mb-12">
+        <div className="flex flex-col items-start font-mono text-[8px] md:text-[10px]">
           <span className="text-[var(--tech-accent)]">GRID_X_OFFSET: 42.09</span>
           <span>LATENCY: 4ms</span>
         </div>
-        <div className="flex flex-col items-end font-mono text-[10px]">
+        <div className="flex flex-col items-end font-mono text-[8px] md:text-[10px]">
           <span className="text-[var(--tech-accent)]">SECURE_CHANNEL: ACTIVE</span>
           <span>TIMESTAMP: {new Date().toLocaleTimeString()}</span>
         </div>
