@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { User, Mail, Globe, MapPin, Edit3, Save, Zap, Trophy, Flame, Github, Twitter, Link as LinkIcon, Shield, Target, QrCode, BarChart3, Fingerprint, LogOut } from 'lucide-react';
 import { updateUserProfile, subscribeToPosts } from '../lib/db';
 import { auth } from '../lib/firebase';
-import { signOut } from 'firebase/auth';
+import { signOut, sendEmailVerification } from 'firebase/auth';
+import { toast } from 'sonner';
 
 interface ProfileProps {
   user: any;
@@ -38,6 +39,21 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
 
   const handleLogout = () => {
     signOut(auth);
+  };
+
+  const handleResendVerification = async () => {
+    if (auth.currentUser) {
+      try {
+        await sendEmailVerification(auth.currentUser);
+        toast.success('LINK_DISPATCHED', {
+          description: 'A new authentication sequence has been sent to your primary node.',
+        });
+      } catch (error: any) {
+        toast.error('DISPATCH_ERROR', {
+          description: error.message || 'The verification relay failed to transmit.',
+        });
+      }
+    }
   };
 
   if (!user) return null;
@@ -165,7 +181,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                     </div>
                     <div className="space-y-2">
                        {[
-                         { icon: Mail, value: user.email, label: 'Encrypted_Mail' },
+                         { icon: Mail, value: user.email, label: 'Encrypted_Mail', verified: user.emailVerified },
                          { icon: MapPin, value: location, label: 'Physical_Node', edit: true, state: setLocation },
                          { icon: Globe, value: website, label: 'Global_Alias', edit: true, state: setWebsite },
                        ].map((link, idx) => (
@@ -173,11 +189,28 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                             <div className="flex items-center space-x-3">
                                <link.icon size={14} className="text-white/40" />
                                <div className="flex flex-col">
-                                  <span className="text-[6px] font-mono text-white/20 uppercase font-black">{link.label}</span>
+                                  <div className="flex items-center space-x-2">
+                                    <span className="text-[6px] font-mono text-white/20 uppercase font-black">{link.label}</span>
+                                    {link.label === 'Encrypted_Mail' && (
+                                      <span className={`text-[6px] font-black italic px-1 rounded ${link.verified ? 'text-[var(--tech-accent)] bg-[var(--tech-accent)]/10' : 'text-red-500 bg-red-500/10'}`}>
+                                        {link.verified ? 'SECURE' : 'UNVERIFIED'}
+                                      </span>
+                                    )}
+                                  </div>
                                   {isEditing && link.edit ? (
                                     <input value={link.value} onChange={(e) => link.state!(e.target.value)} className="bg-transparent text-[10px] text-white font-bold outline-none border-b border-white/10" />
                                   ) : (
-                                    <span className="text-[10px] text-white/70 font-black uppercase tracking-widest truncate max-w-[200px]">{link.value}</span>
+                                    <div className="flex items-center space-x-3">
+                                      <span className="text-[10px] text-white/70 font-black uppercase tracking-widest truncate max-w-[200px]">{link.value}</span>
+                                      {link.label === 'Encrypted_Mail' && !link.verified && (
+                                        <button 
+                                          onClick={handleResendVerification}
+                                          className="text-[8px] font-black text-[var(--tech-accent)] border-b border-[var(--tech-accent)]/30 hover:border-[var(--tech-accent)] transition-all"
+                                        >
+                                          RETRY_DISPATCH
+                                        </button>
+                                      )}
+                                    </div>
                                   )}
                                </div>
                             </div>

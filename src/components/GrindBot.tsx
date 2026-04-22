@@ -123,10 +123,10 @@ export const GrindBot: React.FC<GrindBotProps> = ({ user }) => {
   };
 
   return (
-    <div className="flex flex-col h-full relative bg-transparent overflow-hidden -m-4 md:-m-12">
+    <div className="flex-1 flex flex-col relative bg-transparent overflow-hidden w-full min-h-0">
       <div 
         ref={scrollRef}
-        className="flex-1 overflow-y-auto custom-scrollbar px-4 md:px-6 pb-48 pt-4 md:pt-12 space-y-6 md:space-y-12"
+        className="flex-1 overflow-y-auto custom-scrollbar px-4 md:px-6 pb-64 pt-4 md:pt-12 space-y-6 md:space-y-12"
       >
         {/* Centered High-Fidelity Header (Now part of scrollable content) */}
         <div className="flex flex-col items-center justify-center pb-8 md:pb-20 space-y-3 md:space-y-4">
@@ -215,7 +215,7 @@ export const GrindBot: React.FC<GrindBotProps> = ({ user }) => {
       </div>
 
       {/* Re-engineered Bottom Input Area with Solid Masking Shield */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[var(--tech-bg)] via-[var(--tech-bg)]/80 to-transparent pt-12 pb-4 px-4 md:px-8 pointer-events-none">
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[var(--tech-bg)] via-[var(--tech-bg)]/80 to-transparent pt-12 pb-10 md:pb-8 px-4 md:px-8 pointer-events-none z-20">
         <div className="max-w-4xl mx-auto flex items-end space-x-2 md:space-x-3 pointer-events-auto">
           <form onSubmit={handleSend} className="flex-1 group">
             <div className="relative tech-indent bg-black border border-[var(--tech-border)] shadow-2xl overflow-hidden rounded-sm">

@@ -22,7 +22,13 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
 import { auth } from './lib/firebase';
-import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from 'firebase/auth';
+import { 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  onAuthStateChanged, 
+  signOut,
+  applyActionCode 
+} from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from './lib/firebase';
 import { getOrCreateUserProfile } from './lib/db';
@@ -50,6 +56,40 @@ function App() {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  // Handle Firebase Auth Actions (Email Verification, Password Reset)
+  useEffect(() => {
+    const handleAuthActions = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const mode = urlParams.get('mode');
+      const oobCode = urlParams.get('oobCode');
+
+      if (mode && oobCode) {
+        try {
+          if (mode === 'verifyEmail' || mode === 'verifyAndChangeEmail') {
+            await applyActionCode(auth, oobCode);
+            toast.success('SIGNATURE_VERIFIED', {
+              description: 'Your biological credentials have been authenticated. Neural link secured.',
+            });
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+          } else if (mode === 'resetPassword') {
+            toast.info('DECRYPTION_INITIATED', {
+              description: 'Passcode reset procedure detected. Follow console instructions.',
+            });
+            // Typically you'd show a modal here or redirect to a settings view
+          }
+        } catch (error: any) {
+          logger.error('Auth action failed', { mode, error });
+          toast.error('PROTOCOL_BREACH', {
+            description: error.message || 'The verification sequence failed to complete.',
+          });
+        }
+      }
+    };
+
+    handleAuthActions();
+  }, []);
 
   useEffect(() => {
     let profileUnsubscribe: () => void = () => {};
@@ -475,7 +515,7 @@ function App() {
           )}
         </AnimatePresence>
 
-        <div className={`flex-1 ${view === 'buddy' ? 'overflow-hidden' : 'overflow-y-auto'} p-4 md:p-12 custom-scrollbar relative z-10 scroll-smooth`}>
+        <div className={`flex-1 ${view === 'buddy' || view === 'signals' ? 'overflow-hidden' : 'overflow-y-auto p-4 md:p-12'} custom-scrollbar relative z-10 scroll-smooth flex flex-col`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={view}
@@ -483,8 +523,9 @@ function App() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.2 }}
+              className="flex-1 flex flex-col min-h-0 min-w-0"
             >
-              <div className="max-w-6xl mx-auto">
+              <div className={`max-w-6xl mx-auto w-full flex-1 flex flex-col min-h-0 ${view === 'buddy' || view === 'signals' ? 'h-full' : ''}`}>
                 {renderContent()}
               </div>
             </motion.div>
