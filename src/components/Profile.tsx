@@ -44,9 +44,14 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
   const handleResendVerification = async () => {
     if (auth.currentUser) {
       try {
-        await sendEmailVerification(auth.currentUser);
+        const actionCodeSettings = {
+          // This tells Firebase to redirect back to the app's current origin (Preview or Vercel)
+          url: window.location.origin,
+          handleCodeInApp: true,
+        };
+        await sendEmailVerification(auth.currentUser, actionCodeSettings);
         toast.success('LINK_DISPATCHED', {
-          description: 'A new authentication sequence has been sent to your primary node.',
+          description: 'A dynamic authentication link has been sent to your primary node.',
         });
       } catch (error: any) {
         toast.error('DISPATCH_ERROR', {
