@@ -60,15 +60,19 @@ function App() {
   // Handle Firebase Auth Actions (Email Verification, Password Reset)
   useEffect(() => {
     const handleAuthActions = async () => {
+      // Add a tiny delay to ensure parameters are fully indexed by the browser engine
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       const urlParams = new URLSearchParams(window.location.search);
       const mode = urlParams.get('mode');
       const oobCode = urlParams.get('oobCode');
 
       if (mode && oobCode) {
+        logger.info('System: Verification sequence detected', { mode });
         try {
-          // Broaden detection to handle custom 'action' mode or standard 'verifyEmail'
           if (mode === 'verifyEmail' || mode === 'verifyAndChangeEmail' || mode === 'action') {
             await applyActionCode(auth, oobCode);
+            logger.info('System: Signature verified successfully');
             toast.success('SIGNATURE_VERIFIED', {
               description: 'Your biological credentials have been authenticated. Neural link secured.',
             });
@@ -76,15 +80,20 @@ function App() {
             const cleanUrl = window.location.origin + window.location.pathname;
             window.history.replaceState({}, document.title, cleanUrl);
           } else if (mode === 'resetPassword') {
+            logger.info('System: Password reset operation pending');
             toast.info('DECRYPTION_INITIATED', {
-              description: 'Passcode reset procedure detected. Follow console instructions.',
+              description: 'Passcode reset procedure detected.',
             });
-            // Typically you'd show a modal here or redirect to a settings view
           }
         } catch (error: any) {
-          logger.error('Auth action failed', { mode, error });
-          toast.error('PROTOCOL_BREACH', {
-            description: error.message || 'The verification sequence failed to complete.',
+          // Check for expired code specifically
+          const isExpired = error.code === 'auth/expired-action-code';
+          logger.error('System: Protocol breach in verification sequence', { mode, code: error.code });
+          
+          toast.error(isExpired ? 'LINK_EXPIRED' : 'PROTOCOL_BREACH', {
+            description: isExpired 
+              ? 'This authentication sequence has expired. Generate a new dispatch in your profile.' 
+              : error.message || 'The verification sequence failed.',
           });
         }
       }
